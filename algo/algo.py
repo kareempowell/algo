@@ -1,4 +1,4 @@
-class algo(object):
+class algo():
 
   #choose a group of bitcoin, indices, and forex
   #iterate through the instruments using the select function
