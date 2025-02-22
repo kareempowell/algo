@@ -77,8 +77,8 @@ class MomentumTrader(tpqoa.tpqoa):
               self.print_transactions(tid=int(o['id']) - 1)
               self.position = -1
 #may need to leave this for jupityer
-  mt = MomentumTrader('/content/drive/MyDrive/Paueru/Projects/Models/2. AlgoTrading Models/oanda.cfg', momentum=5)
-  mt.stream_data('EUR_USD', stop=100)
+mt = MomentumTrader('/content/drive/MyDrive/Paueru/Projects/Models/2. AlgoTrading Models/oanda.cfg', momentum=5)
+mt.stream_data('EUR_USD', stop=100)
 
 #initialize close out class
 class closetrades(tpqoa.tpqoa):
