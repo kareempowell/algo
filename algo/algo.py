@@ -15,11 +15,18 @@ import sys
 class algo:
    
   def __init__(self, api):
-    self.api = api  # Store API instance
-    self.instruments_data = self.api.get_instruments()  # Fetch all instruments
+    self.api = api  # Store the API instance
+    self.instruments_data = self.api.get_instruments()
+
+    print("Raw Instruments Data:", self.instruments_data)  # Debugging: Check data format
+
     self.crypto_data = self.get_instruments_by_type("crypto")
     self.forex_data = self.get_instruments_by_type("forex")
     self.indices_data = self.get_instruments_by_type("indices")
+
+    print("Crypto Data:", self.crypto_data)
+    print("Forex Data:", self.forex_data)
+    print("Indices Data:", self.indices_data)
 
   def get_instruments_by_type(self, asset_type):
     """Filter instruments by type and return a list."""
