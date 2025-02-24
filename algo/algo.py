@@ -22,8 +22,13 @@ class algo:
     self.indices_data = self.get_instruments_by_type("indices")
 
   def get_instruments_by_type(self, asset_type):
-    """Filter instruments by type."""
-    return [instrument for instrument in list(self.instruments_data) if isinstance(instrument, dict) and instrument.get("type") == asset_type]
+    """Filter instruments by type and return a list."""
+    if not isinstance(self.instruments_data, list):  
+        print("Error: self.instruments_data is not a list", type(self.instruments_data))
+        return []  # Return an empty list to avoid breaking
+
+    return [instrument for instrument in self.instruments_data if isinstance(instrument, dict) and instrument.get("type") == asset_type]
+
        
   def select_instrument(self):
     #selecting instruments N.B. 1st line previously data = oanda.get_history
