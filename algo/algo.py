@@ -1,5 +1,7 @@
 class algo(object):
 
+   def __init__(self):
+        
   #choose a group of bitcoin, indices, and forex
   #iterate through the instruments using the select function
   #for each instrument measure their relative performance and store in a list
@@ -73,7 +75,7 @@ class algo(object):
     #initialize automation
     import pandas as pd
     class MomentumTrader(tpqoa.tpqoa):
-        def __init__(self, config_file, momentum):
+        def (self, config_file, momentum):
             super(MomentumTrader, self).__init__(config_file)
             self.momentum = momentum
             self.min_length = momentum + 1
