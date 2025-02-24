@@ -9,7 +9,8 @@ class algo(object):
 #create a function to place orders for each of these securities. batch ordering?
    
   def __init__(self):
-
+     pass
+     
   def get_instruments_by_type(self, asset_type="forex"):
     ''' Retrieves and filters instruments based on type.
 
