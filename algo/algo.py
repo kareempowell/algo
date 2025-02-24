@@ -1,4 +1,9 @@
-
+pip install backtrader
+import backtrader as bt
+import logging
+import datetime
+import os.path
+import sys  
 
 class algo(object):
 
@@ -124,12 +129,6 @@ class algo(object):
             pprint(o)
 '''              
       #source: https://github.com/GJason88/backtrader-backtests/blob/master/StochasticSR/Stochastic_SR_Backtest.py
-     import backtrader as bt
-     import logging
-     import datetime
-
-import os.path
-import sys  
 '''
 
 class StochasticSR(bt.Strategy):
