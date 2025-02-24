@@ -1,6 +1,6 @@
 class algo(object):
-
-   def __init__(self):
+   
+  def __init__(self):
         
   #choose a group of bitcoin, indices, and forex
   #iterate through the instruments using the select function
