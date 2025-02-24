@@ -133,12 +133,12 @@ import sys
 '''      
     
     class StochasticSR(bt.Strategy):
-        '''Trading strategy that utilizes the Stochastic Oscillator indicator for oversold/overbought entry points, 
-        and previous support/resistance via Donchian Channels as well as a max loss in pips for risk levels.'''
-        # parameters for Stochastic Oscillator and max loss in pips
-        # Donchian Channels to determine previous support/resistance levels will use the given period as well
-        # http://www.ta-guru.com/Book/TechnicalAnalysis/TechnicalIndicators/Stochastic.php5 for Stochastic Oscillator formula and description
-        params = (('period', 14), ('pfast', 3), ('pslow', 3), ('upperLimit', 80), ('lowerLimit', 20), ('stop_pips', .002))
+            '''Trading strategy that utilizes the Stochastic Oscillator indicator for oversold/overbought entry points, 
+            and previous support/resistance via Donchian Channels as well as a max loss in pips for risk levels.'''
+            # parameters for Stochastic Oscillator and max loss in pips
+            # Donchian Channels to determine previous support/resistance levels will use the given period as well
+            # http://www.ta-guru.com/Book/TechnicalAnalysis/TechnicalIndicators/Stochastic.php5 for Stochastic Oscillator formula and description
+            params = (('period', 14), ('pfast', 3), ('pslow', 3), ('upperLimit', 80), ('lowerLimit', 20), ('stop_pips', .002))
     
         def __init__(self):
             '''Initializes logger and variables required for the strategy implementation.'''
