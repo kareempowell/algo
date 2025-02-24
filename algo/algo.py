@@ -14,8 +14,12 @@ class algo(object):
 #then select the securities based on the above
 #create a function to place orders for each of these securities. batch ordering?
    
-  def __init__(self):
-     pass
+  def __init__(self,api):
+     self.instruments_data = self.api.get_instruments()
+     self.crypto_data = self.get_instruments_by_type("crypto")
+     self.forex_data = self.get_instruments_by_type("forex")
+     self.indices_data = self.get_instruments_by_type("indices")
+
      
   def get_instruments_by_type(self, asset_type="forex"):
     ''' Retrieves and filters instruments based on type.
