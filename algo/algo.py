@@ -18,23 +18,32 @@ class algo:
     self.api = api  # Store the API instance
     self.instruments_data = self.api.get_instruments()
 
-    print("Raw Instruments Data:", self.instruments_data)  # Debugging: Check data format
+  import re
 
-    self.crypto_data = self.get_instruments_by_type("crypto")
-    self.forex_data = self.get_instruments_by_type("forex")
-    self.indices_data = self.get_instruments_by_type("indices")
+import re
 
-    print("Crypto Data:", self.crypto_data)
-    print("Forex Data:", self.forex_data)
-    print("Indices Data:", self.indices_data)
+def get_instruments_by_type(self, asset_type):
+    """Filter instruments by asset type using naming conventions."""
+    
+    # Forex: Typically formatted as "XXX/YYY" (e.g., "EUR/USD", "GBP/JPY")
+    forex_pattern = re.compile(r"^[A-Z]{3}/[A-Z]{3}$")
 
-  def get_instruments_by_type(self, asset_type):
-    """Filter instruments by type and return a list."""
-    if not isinstance(self.instruments_data, list):  
-        print("Error: self.instruments_data is not a list", type(self.instruments_data))
-        return []  # Return an empty list to avoid breaking
+    # Crypto: Commonly "XXX/USD" where XXX is a crypto symbol
+    crypto_pattern = re.compile(r"^(BTC|ETH|LTC|XRP|ADA|DOT|DOGE|SOL|BNB|SHIB)/USD$")
 
-    return [instrument for instrument in self.instruments_data if isinstance(instrument, dict) and instrument.get("type") == asset_type]
+    # Indices: Usually contain numbers or specific index abbreviations
+    indices_pattern = re.compile(r"^(SPX|NAS|DJI|FTSE|DAX|HSI|NIK|CAC|ASX|TSX)\d*$")
+
+    if asset_type == "forex":
+        return [instrument for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
+    
+    if asset_type == "crypto":
+        return [instrument for instrument in self.instruments_data if crypto_pattern.match(instrument[0])]
+    
+    if asset_type == "indices":
+        return [instrument for instrument in self.instruments_data if indices_pattern.match(instrument[0])]
+
+    return []  # Return empty list if asset type is unknown
 
        
   def select_instrument(self):
