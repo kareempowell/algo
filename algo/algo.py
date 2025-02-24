@@ -1,8 +1,4 @@
-import backtrader as bt
-import logging
-import datetime
-import os.path
-import sys
+
 
 class algo(object):
 
@@ -126,10 +122,15 @@ class algo(object):
             mt.print_transactions(tid=int(o['id']) - 1)
             print('\n')
             pprint(o)
-              
+'''              
       #source: https://github.com/GJason88/backtrader-backtests/blob/master/StochasticSR/Stochastic_SR_Backtest.py
-      
-      
+     import backtrader as bt
+     import logging
+     import datetime
+
+import os.path
+import sys  
+'''      
     
     class StochasticSR(bt.Strategy):
         '''Trading strategy that utilizes the Stochastic Oscillator indicator for oversold/overbought entry points, 
