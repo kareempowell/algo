@@ -22,7 +22,7 @@ class algo:
 
 import re
 
-def get_instruments_by_type(self, asset_type):
+  def get_instruments_by_type(self, asset_type):
     """Filter instruments by asset type using naming conventions."""
     
     # Forex: Typically formatted as "XXX/YYY" (e.g., "EUR/USD", "GBP/JPY")
