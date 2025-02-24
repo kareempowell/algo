@@ -4,8 +4,6 @@ import datetime
 import os.path
 import sys  
 
-class algo(object):
-
 #choose a group of bitcoin, indices, and forex
 #iterate through the instruments using the select function
 #for each instrument measure their relative performance and store in a list
@@ -13,41 +11,20 @@ class algo(object):
 #return this preferred list of securities
 #then select the securities based on the above
 #create a function to place orders for each of these securities. batch ordering?
+
+class algo:
    
-  def __init__(self,api):
-     self.instruments_data = self.api.get_instruments()
-     self.crypto_data = self.get_instruments_by_type("crypto")
-     self.forex_data = self.get_instruments_by_type("forex")
-     self.indices_data = self.get_instruments_by_type("indices")
+    def __init__(self, api):
+        self.api = api  # Store API instance
+        self.instruments_data = self.api.get_instruments()  # Fetch all instruments
+        self.crypto_data = self.get_instruments_by_type("crypto")
+        self.forex_data = self.get_instruments_by_type("forex")
+        self.indices_data = self.get_instruments_by_type("indices")
 
-     
-  def get_instruments_by_type(self, asset_type="forex"):
-    ''' Retrieves and filters instruments based on type.
-
-    Parameters
-    ==========
-    asset_type: str
-        Options: 'forex', 'crypto', 'indices'
-
-    Returns
-    =======
-    List of tuples (displayName, name) matching the asset type.
-    '''
-     
-    resp = self.ctx.account.instruments(self.account_id)
-    instruments = resp.get('instruments')
-    instruments = [ins.dict() for ins in instruments]
-     
-    if asset_type == "forex":
-      filtered = [(ins['displayName'], ins['name']) for ins in instruments if "_" in ins['name']]
-    elif asset_type == "crypto":
-      filtered = [(ins['displayName'], ins['name']) for ins in instruments if "BTC" in ins['name'] or "ETH" in ins['name']]
-    elif asset_type == "indices":
-      filtered = [(ins['displayName'], ins['name']) for ins in instruments if "USD" in ins['name'] and "_" not in ins['name']]
-    else:
-        raise ValueError("Invalid asset type. Choose 'forex', 'crypto', or 'indices'.")
-    return sorted(filtered)
-  
+    def get_instruments_by_type(self, asset_type):
+        """Filter instruments by type."""
+        return [instrument for instrument in self.instruments_data if instrument["type"] == asset_type]
+       
   def select_instrument(self):
     #selecting instruments N.B. 1st line previously data = oanda.get_history
     data = api.get_history(
