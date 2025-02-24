@@ -1,4 +1,4 @@
-class algo():
+class algo(object):
 
   #choose a group of bitcoin, indices, and forex
   #iterate through the instruments using the select function
@@ -7,6 +7,33 @@ class algo():
   #return this preferred list of securities
   #then select the securities based on the above
   #create a function to place orders for each of these securities. batch ordering?
+
+  def get_instruments_by_type(self, asset_type="forex"):
+    ''' Retrieves and filters instruments based on type.
+
+    Parameters
+    ==========
+    asset_type: str
+        Options: 'forex', 'crypto', 'indices'
+
+    Returns
+    =======
+    List of tuples (displayName, name) matching the asset type.
+    '''
+    resp = self.ctx.account.instruments(self.account_id)
+    instruments = resp.get('instruments')
+    instruments = [ins.dict() for ins in instruments]
+    
+    if asset_type == "forex":
+        filtered = [(ins['displayName'], ins['name']) for ins in instruments if "_" in ins['name']]
+    elif asset_type == "crypto":
+        filtered = [(ins['displayName'], ins['name']) for ins in instruments if "BTC" in ins['name'] or "ETH" in ins['name']]
+    elif asset_type == "indices":
+        filtered = [(ins['displayName'], ins['name']) for ins in instruments if "USD" in ins['name'] and "_" not in ins['name']]
+    else:
+        raise ValueError("Invalid asset type. Choose 'forex', 'crypto', or 'indices'.")
+
+    return sorted(filtered)
   
   def select_instrument(self):
     #selecting instruments N.B. 1st line previously data = oanda.get_history
