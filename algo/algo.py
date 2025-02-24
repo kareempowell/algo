@@ -14,16 +14,16 @@ import sys
 
 class algo:
    
-    def __init__(self, api):
-        self.api = api  # Store API instance
-        self.instruments_data = self.api.get_instruments()  # Fetch all instruments
-        self.crypto_data = self.get_instruments_by_type("crypto")
-        self.forex_data = self.get_instruments_by_type("forex")
-        self.indices_data = self.get_instruments_by_type("indices")
+  def __init__(self, api):
+    self.api = api  # Store API instance
+    self.instruments_data = self.api.get_instruments()  # Fetch all instruments
+    self.crypto_data = self.get_instruments_by_type("crypto")
+    self.forex_data = self.get_instruments_by_type("forex")
+    self.indices_data = self.get_instruments_by_type("indices")
 
-    def get_instruments_by_type(self, asset_type):
-        """Filter instruments by type."""
-        return [instrument for instrument in self.instruments_data if instrument["type"] == asset_type]
+  def get_instruments_by_type(self, asset_type):
+    """Filter instruments by type."""
+    return [instrument for instrument in self.instruments_data if instrument["type"] == asset_type]
        
   def select_instrument(self):
     #selecting instruments N.B. 1st line previously data = oanda.get_history
