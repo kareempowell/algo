@@ -111,18 +111,15 @@ class algo(object):
                   self.print_transactions(tid=int(o['id']) - 1)
                   self.position = -1
       
-    #initialize close out class
-      def closingactiveorders(self):
-          #[3c]
-          #closing out the final position. shows the complete, detailed order object
-          from pprint import pprint
-          o = mt.create_order('EUR_USD', units=-mt.position * mt.units,
-                              suppress=True, ret = True)
-          print('\n*** POSITION CLOSED ***')
-          mt.print_transactions(tid=int(o['id']) - 1)
-          print('\n')
-          pprint(o)
-        
+        def closingactiveorders(self):
+            #[3c]
+            #closing out the final position. shows the complete, detailed order object
+            from pprint import pprint
+            o = mt.create_order('EUR_USD', units=-mt.position * mt.units, suppress=True, ret = True)
+            print('\n*** POSITION CLOSED ***')
+            mt.print_transactions(tid=int(o['id']) - 1)
+            print('\n')
+            pprint(o)
               
       #source: https://github.com/GJason88/backtrader-backtests/blob/master/StochasticSR/Stochastic_SR_Backtest.py
       
