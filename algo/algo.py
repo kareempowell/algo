@@ -23,20 +23,20 @@ class algo(object):
     =======
     List of tuples (displayName, name) matching the asset type.
     '''
-     resp = self.ctx.account.instruments(self.account_id)
-     instruments = resp.get('instruments')
-     instruments = [ins.dict() for ins in instruments]
      
-     if asset_type == "forex":
-        filtered = [(ins['displayName'], ins['name']) for ins in instruments if "_" in ins['name']]
-     elif asset_type == "crypto":
-        filtered = [(ins['displayName'], ins['name']) for ins in instruments if "BTC" in ins['name'] or "ETH" in ins['name']]
-     elif asset_type == "indices":
-        filtered = [(ins['displayName'], ins['name']) for ins in instruments if "USD" in ins['name'] and "_" not in ins['name']]
-     else:
-         raise ValueError("Invalid asset type. Choose 'forex', 'crypto', or 'indices'.")
-
-     return sorted(filtered)
+    resp = self.ctx.account.instruments(self.account_id)
+    instruments = resp.get('instruments')
+    instruments = [ins.dict() for ins in instruments]
+     
+    if asset_type == "forex":
+      filtered = [(ins['displayName'], ins['name']) for ins in instruments if "_" in ins['name']]
+    elif asset_type == "crypto":
+      filtered = [(ins['displayName'], ins['name']) for ins in instruments if "BTC" in ins['name'] or "ETH" in ins['name']]
+    elif asset_type == "indices":
+      filtered = [(ins['displayName'], ins['name']) for ins in instruments if "USD" in ins['name'] and "_" not in ins['name']]
+    else:
+        raise ValueError("Invalid asset type. Choose 'forex', 'crypto', or 'indices'.")
+    return sorted(filtered)
   
   def select_instrument(self):
     #selecting instruments N.B. 1st line previously data = oanda.get_history
