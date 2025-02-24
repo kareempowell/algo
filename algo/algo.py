@@ -76,7 +76,7 @@ class algo(object):
     #initialize automation
     import pandas as pd
     class MomentumTrader(tpqoa.tpqoa):
-        def (self, config_file, momentum):
+        def __init__(self, config_file, momentum):
             super(MomentumTrader, self).__init__(config_file)
             self.momentum = momentum
             self.min_length = momentum + 1
@@ -112,7 +112,6 @@ class algo(object):
                   self.position = -1
       
     #initialize close out class
-    class closetrades(tpqoa.tpqoa):
       def closingactiveorders(self):
           #[3c]
           #closing out the final position. shows the complete, detailed order object
