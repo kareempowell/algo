@@ -1,4 +1,3 @@
-!pip install backtrader
 import backtrader as bt
 import logging
 import datetime
