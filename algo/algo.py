@@ -19,29 +19,13 @@ class algo:
     self.api = api  # Store the API instance
     self.instruments_data = self.api.get_instruments()
 
-  def get_instruments_by_type(self, asset_type):
+  def get_instruments_by_type(self):
     """Filter instruments by asset type using naming conventions."""
     
     # Forex: Typically formatted as "XXX/YYY" (e.g., "EUR/USD", "GBP/JPY")
     forex_pattern = re.compile(r"^[A-Z]{3}/[A-Z]{3}$")
-
-    # Crypto: Commonly "XXX/USD" where XXX is a crypto symbol
-    crypto_pattern = re.compile(r"^(BTC|ETH|LTC|XRP|ADA|DOT|DOGE|SOL|BNB|SHIB)/USD$")
-
-    # Indices: Usually contain numbers or specific index abbreviations
-    indices_pattern = re.compile(r"^(SPX|NAS|DJI|FTSE|DAX|HSI|NIK|CAC|ASX|TSX)\d*$")
-
-    if asset_type == "forex":
-        return [instrument for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
+    return [instrument for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
     
-    if asset_type == "crypto":
-        return [instrument for instrument in self.instruments_data if crypto_pattern.match(instrument[0])]
-    
-    if asset_type == "indices":
-        return [instrument for instrument in self.instruments_data if indices_pattern.match(instrument[0])]
-
-    return []  # Return empty list if asset type is unknown
-
        
   def select_instrument(self):
     #selecting instruments N.B. 1st line previously data = oanda.get_history
