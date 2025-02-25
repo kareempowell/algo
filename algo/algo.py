@@ -20,8 +20,6 @@ class algo:
 
   import re
 
-import re
-
   def get_instruments_by_type(self, asset_type):
     """Filter instruments by asset type using naming conventions."""
     
