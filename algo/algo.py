@@ -27,17 +27,19 @@ class algo:
     return [instrument for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
     
        
-  def select_instrument(self):
+  def select_instrument(self, instrum):
     #selecting instruments N.B. 1st line previously data = oanda.get_history
     data = api.get_history(
-        instrument='EUR_USD',
+        instrument=instrum,
         start='2025-02-06',
         end='2025-02-07',
         granularity='M1',
         price='M'
     )
     data.info()
-
+  
+   #'EUR_USD'
+   
   def measure_performance(self):
     #Backtesting: Build out momentum strategy | NB. Why is this backtesting?
     import numpy as np
@@ -47,16 +49,17 @@ class algo:
         col = f'p_{momentum}'
         data[col] = np.sign(data['returns'].rolling(momentum).mean())
         cols.append(col)
+     return data[col]
     
     #visualize strategy performance | N.B. line 2 previously 'seaborn'
-    from pylab import plt
-    plt.style.use('seaborn-v0_8-colorblind')
-    strats = ['returns']
-    for col in cols:
-        strat = f's_{col[2:]}'
-        data[strat] = data[col].shift(1) * data['returns']
-        strats.append(strat)
-    data[strats].dropna().cumsum().apply(np.exp).plot(cmap='coolwarm');
+    #from pylab import plt
+    #plt.style.use('seaborn-v0_8-colorblind')
+    #strats = ['returns']
+    #for col in cols:
+    #    strat = f's_{col[2:]}'
+    #    data[strat] = data[col].shift(1) * data['returns']
+    #    strats.append(strat)
+    #data[strats].dropna().cumsum().apply(np.exp).plot(cmap='coolwarm');
 
     #may need to leave this for jupityer
     mt = MomentumTrader('/content/drive/MyDrive/Paueru/Projects/Models/2. AlgoTrading Models/oanda.cfg', momentum=5)
