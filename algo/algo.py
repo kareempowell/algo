@@ -1,3 +1,4 @@
+import re
 import backtrader as bt
 import logging
 import datetime
@@ -17,8 +18,6 @@ class algo:
   def __init__(self, api):
     self.api = api  # Store the API instance
     self.instruments_data = self.api.get_instruments()
-
-  import re
 
   def get_instruments_by_type(self, asset_type):
     """Filter instruments by asset type using naming conventions."""
