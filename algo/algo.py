@@ -59,7 +59,7 @@ class algo:
        for momentum in [15, 30, 60, 120, 150]:
            col = f'p_{momentum}'
            data[col] = np.sign(data['returns'].rolling(momentum).mean())
-           data2= data['Instruments']+data[col]
+           data2= data['Instrument']+data[col]
        results.append(data2)  # Store the modified DataFrame
     return pd.concat(results)  # Combine all into one table
 
