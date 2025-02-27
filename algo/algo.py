@@ -27,16 +27,19 @@ class algo:
     return [instrument[1] for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
     
        
-  def select_instrument(self, instrum):
+  def select_instrument(self, instruments, startdate, enddate):
     #selecting instruments N.B. 1st line previously data = oanda.get_history
-    data = self.api.get_history(
-        instrument=instrum,
-        start='2025-02-06',
-        end='2025-02-07',
-        granularity='M1',
-        price='M'
-    )
-    data.info()
+    datalist=[]
+    for instrument in instruments:
+       data = self.api.get_history(
+          instrument=instrum,
+          start=startdate,
+          end=enddate,
+          granularity='M1',
+          price='M'
+       )
+       datalist = datalist.append(data)
+    return datalist
   
    #'EUR_USD'
    
