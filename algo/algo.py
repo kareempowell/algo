@@ -1,4 +1,6 @@
 import re
+import numpy as np
+import pandas as pd
 import backtrader as bt
 import logging
 import datetime
@@ -44,19 +46,24 @@ class algo:
   
    #'EUR_USD'
    
-  def measure_performance(self, instruments):
-    #Backtesting: Build out momentum strategy | NB. Why is this backtesting?
-    import numpy as np
-    colslist=[]
-    for instrument in instruments:
+  def measure_performance(self, datalist):
+    """
+    Backtesting: Build out momentum strategy for each instrument in datalist.
+    """
+    results=[]
+     
+    for data in datalist:
+       data=data.copy()
        data['returns'] = np.log(data['c'] / data['c'].shift(1))
-       cols = []
+       data['Instrument'] = data["Instrument"].iloc[0]  # Ensure instrument name is present
+       
        for momentum in [15, 30, 60, 120, 150]:
            col = f'p_{momentum}'
            data[col] = np.sign(data['returns'].rolling(momentum).mean())
-           cols.append(col)
-       colslist.append(data[instrument, col])
-     return colslist
+       results.append(data)  # Store the modified DataFrame
+    return pd.concat(results)  # Combine all into one table
+
+     
     
     #visualize strategy performance | N.B. line 2 previously 'seaborn'
     #from pylab import plt
