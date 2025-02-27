@@ -34,7 +34,7 @@ class algo:
     datalist=[]
     for instrument in instruments:
        data = self.api.get_history(
-          instrument=instruments,
+          instrument=instrument,
           start=startdate,
           end=enddate,
           granularity='M1',
