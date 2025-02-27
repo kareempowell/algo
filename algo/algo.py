@@ -38,6 +38,7 @@ class algo:
           granularity='M1',
           price='M'
        )
+       data.insert(0, "Instrument", instrument)
        datalist = datalist.append(data)
     return datalist
   
