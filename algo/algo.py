@@ -24,7 +24,7 @@ class algo:
     
     # Forex: Typically formatted as "XXX/YYY" (e.g., "EUR/USD", "GBP/JPY")
     forex_pattern = re.compile(r"^[A-Z]{3}/[A-Z]{3}$")
-    return [instrument for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
+    return [instrument[1] for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
     
        
   def select_instrument(self, instrum):
