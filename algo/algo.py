@@ -53,17 +53,14 @@ class algo:
     import pandas as pd
     for data in datalist:
        data=data.copy()
-       data2=[]
        data['returns'] = np.log(data['c'] / data['c'].shift(1))
        data['Instrument'] = data["Instrument"].iloc[0]  # Ensure instrument name is present
        for momentum in [15, 30, 60, 120, 150]:
            col = f'p_{momentum}'
            data[col] = np.sign(data['returns'].rolling(momentum).mean())
-           data2= data['Instrument']+data[col]
-       results.append(data2)  # Store the modified DataFrame
+       results.append(data)  # Store the modified DataFrame
     return pd.concat(results)  # Combine all into one table
 
-     
     
     #visualize strategy performance | N.B. line 2 previously 'seaborn'
     #from pylab import plt
