@@ -1,6 +1,5 @@
 import re
 import numpy as np
-import pandas as pd
 import backtrader as bt
 import logging
 import datetime
@@ -56,7 +55,7 @@ class algo:
        data=data.copy()
        data['returns'] = np.log(data['c'] / data['c'].shift(1))
        data['Instrument'] = data["Instrument"].iloc[0]  # Ensure instrument name is present
-       
+       import pandas as pd
        for momentum in [15, 30, 60, 120, 150]:
            col = f'p_{momentum}'
            data[col] = np.sign(data['returns'].rolling(momentum).mean())
