@@ -41,7 +41,7 @@ class algo:
           price='M'
        )
        data.insert(0, "Instrument", instrument)
-       datalist = datalist.append(data)
+       datalist.append(data)
     return datalist
   
    #'EUR_USD'
