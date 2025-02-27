@@ -49,7 +49,7 @@ class algo:
         col = f'p_{momentum}'
         data[col] = np.sign(data['returns'].rolling(momentum).mean())
         cols.append(col)
-     return data[col]
+    return data[col]
     
     #visualize strategy performance | N.B. line 2 previously 'seaborn'
     #from pylab import plt
