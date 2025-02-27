@@ -50,16 +50,17 @@ class algo:
     Backtesting: Build out momentum strategy for each instrument in datalist.
     """
     results=[]
-     
+    import pandas as pd
     for data in datalist:
        data=data.copy()
+       data2=[]
        data['returns'] = np.log(data['c'] / data['c'].shift(1))
        data['Instrument'] = data["Instrument"].iloc[0]  # Ensure instrument name is present
-       import pandas as pd
        for momentum in [15, 30, 60, 120, 150]:
            col = f'p_{momentum}'
            data[col] = np.sign(data['returns'].rolling(momentum).mean())
-       results.append(data)  # Store the modified DataFrame
+           data2= data['Instruments']+data[col]
+       results.append(data2)  # Store the modified DataFrame
     return pd.concat(results)  # Combine all into one table
 
      
