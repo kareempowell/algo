@@ -29,7 +29,7 @@ class algo:
        
   def select_instrument(self, instrum):
     #selecting instruments N.B. 1st line previously data = oanda.get_history
-    data = api.get_history(
+    data = self.api.get_history(
         instrument=instrum,
         start='2025-02-06',
         end='2025-02-07',
