@@ -44,16 +44,19 @@ class algo:
   
    #'EUR_USD'
    
-  def measure_performance(self):
+  def measure_performance(self, instruments):
     #Backtesting: Build out momentum strategy | NB. Why is this backtesting?
     import numpy as np
-    data['returns'] = np.log(data['c'] / data['c'].shift(1))
-    cols = []
-    for momentum in [15, 30, 60, 120, 150]:
-        col = f'p_{momentum}'
-        data[col] = np.sign(data['returns'].rolling(momentum).mean())
-        cols.append(col)
-    return data[col]
+    colslist=[]
+    for instrument in instruments:
+       data['returns'] = np.log(data['c'] / data['c'].shift(1))
+       cols = []
+       for momentum in [15, 30, 60, 120, 150]:
+           col = f'p_{momentum}'
+           data[col] = np.sign(data['returns'].rolling(momentum).mean())
+           cols.append(col)
+       colslist.append(data[instrument, col])
+     return colslist
     
     #visualize strategy performance | N.B. line 2 previously 'seaborn'
     #from pylab import plt
