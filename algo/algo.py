@@ -95,13 +95,17 @@ class algo:
     #initialize automation
     import pandas as pd
     class MomentumTrader(tpqoa.tpqoa):
-        def __init__(self, config_file, momentum):
-            super(MomentumTrader, self).__init__(config_file)
+        def __init__(self, conf_file, instrument, bar_length, momentum, units, *args, **kwargs):
+            super(MomentumTrader, self).__init__(conf_file)
+            self.position = 0
+            self.raw_data = pd.DataFrame()
             self.momentum = momentum
             self.min_length = momentum + 1
-            self.position = 0
-            self.units = 10000
+            self.units = units
             self.tick_data = pd.DataFrame()
+            self.instrument = instrument
+            self.bar_length = bar_length 
+           
         def on_success(self, time, bid, ask):
             trade = False
             # print(self.ticks, end=' ')
