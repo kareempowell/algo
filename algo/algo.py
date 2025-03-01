@@ -67,6 +67,7 @@ class algo:
     Returns a DataFrame with Instrument and momentum signals.
     """
     results = []  # Store processed DataFrames
+    import pandas as pd 
     for data in datalist:
        data['returns'] = np.log(data['c'] / data['c'].shift(1))  # Calculate log returns
        # Create momentum signal columns
