@@ -61,6 +61,21 @@ class algo:
        results.append(data)  # Store the modified DataFrame
     return pd.concat(results)  # Combine all into one table
 
+  def measure_performance2(self, datalist):
+    """
+    Applies a momentum strategy by calculating log returns and momentum signals.
+    Returns a DataFrame with Instrument and momentum signals.
+    """
+    results = []  # Store processed DataFrames
+    for data in datalist:
+       data['returns'] = np.log(data['c'] / data['c'].shift(1))  # Calculate log returns
+       # Create momentum signal columns
+       for momentum in [15, 30, 60, 120,150]:
+           data[f'position_{momentum}'] = np.sign(data['returns'].rolling(momentum).mean())
+       # Keep only the Instrument column and momentum signals
+       results.append(data[['Instrument'] + [f'position_{m}' for m in [15, 30, 60, 120,150]]])  
+    return pd.concat(results)  # Combine all instruments into one DataFrame
+
     
     #visualize strategy performance | N.B. line 2 previously 'seaborn'
     #from pylab import plt
