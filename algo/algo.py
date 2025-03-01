@@ -56,7 +56,7 @@ class algo:
        data['returns'] = np.log(data['c'] / data['c'].shift(1))
        data['Instrument'] = data["Instrument"].iloc[0]  # Ensure instrument name is present
        for momentum in [15, 30, 60, 120, 150]:
-           col = f'p_{momentum}'
+           col = f'position_{momentum}'
            data[col] = np.sign(data['returns'].rolling(momentum).mean())
        results.append(data)  # Store the modified DataFrame
     return pd.concat(results)  # Combine all into one table
