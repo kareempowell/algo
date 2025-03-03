@@ -1,5 +1,6 @@
 import re
 import numpy as np
+import pandas as pd
 import backtrader as bt
 import logging
 import datetime
@@ -77,7 +78,35 @@ class algo:
        results.append(data[['Instrument'] + [f'position_{m}' for m in [15, 30, 60, 120,150]]])  
     return pd.concat(results)  # Combine all instruments into one DataFrame
 
+  def get_best_timeframe_and_instrument(df):
+    """
+    Determines the best trading timeframe and instrument based on Sharpe ratio performance.
     
+    Args:
+        df (pd.DataFrame): Performance data with instrument names and multiple timeframes.
+        
+    Returns:
+        tuple: (best_timeframe, best_instrument)
+    """
+    timeframes = ["position_15", "position_30", "position_60", "position_120", "position_150"]
+
+    # Calculate mean and Sharpe ratio per instrument
+    performance_stats = df.groupby("Instrument")[timeframes].agg(["mean", "std"])
+
+    # Calculate Sharpe Ratio (mean/std), avoiding division by zero
+    sharpe_ratios = performance_stats.xs("mean", axis=1, level=1) / performance_stats.xs("std", axis=1, level=1)
+    sharpe_ratios = sharpe_ratios.fillna(0)  # Handle NaNs
+
+    # Find the best performing timeframe and instrument
+    best_timeframe = sharpe_ratios.mean(axis=0).idxmax()  # Best timeframe overall
+    best_instrument = sharpe_ratios[best_timeframe].idxmax()  # Best instrument in that timeframe
+
+    return best_timeframe, best_instrument
+ 
+
+
+
+     
     #visualize strategy performance | N.B. line 2 previously 'seaborn'
     #from pylab import plt
     #plt.style.use('seaborn-v0_8-colorblind')
