@@ -3,3 +3,4 @@
 #
 __all__ = ['algo']
 from .algo import algo
+from.algo import MomentumTrader
