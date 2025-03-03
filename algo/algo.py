@@ -93,57 +93,52 @@ class algo:
     mt = MomentumTrader('/content/drive/MyDrive/Paueru/Projects/Models/2. AlgoTrading Models/oanda.cfg', momentum=5)
     mt.stream_data('EUR_USD', stop=100)
 
-    #initialize automation
-    import pandas as pd
-    class MomentumTrader(tpqoa.tpqoa):
-        def __init__(self, conf_file, instrument, bar_length, momentum, units, *args, **kwargs):
-            super(MomentumTrader, self).__init__(conf_file)
-            self.position = 0
-            self.raw_data = pd.DataFrame()
-            self.momentum = momentum
-            self.min_length = momentum + 1
-            self.units = units
-            self.tick_data = pd.DataFrame()
-            self.instrument = instrument
-            self.bar_length = bar_length 
+#initialize automation
+class MomentumTrader(tpqoa.tpqoa):
+  def __init__(self, conf_file, instrument, bar_length, momentum, units, *args, **kwargs):
+    super(MomentumTrader, self).__init__(conf_file)
+    self.position = 0
+    self.raw_data = pd.DataFrame()
+    self.momentum = momentum
+    self.min_length = momentum + 1
+    self.units = units
+    self.tick_data = pd.DataFrame()
+    self.instrument = instrument
+    self.bar_length = bar_length 
            
-        def on_success(self, time, bid, ask):
-            trade = False
-            # print(self.ticks, end=' ')
-            self.tick_data = self.tick_data.append(
-                pd.DataFrame({'b': bid, 'a': ask, 'm': (ask + bid) / 2},
-                   index=[pd.Timestamp(time).tz_localize(tz=None)])
-            )
-            self.data = self.tick_data.resample('5s', label='right').last().ffill()
-            self.data['r'] = np.log(self.data['m'] / self.data['m'].shift(1))
-            self.data['m'] = self.data['returns'].rolling(self.momentum).mean()
-            self.data.dropna(inplace=True)
-            if len(self.data) > self.min_length:
-                self.min_length += 1
-                if self.data['m'].iloc[-2] > 0 and self.position in [0, -1]:
-                  o = api.create_order(self.stream_instrument,
-                                 units=(1 - self.position) * self.units,
-                                 suppress=True, ret=True)
-                  print('\n*** GOING LONG ***')
-                  api.print_transactions(tid=int(o['id']) - 1)
-                  self.position = 1
-            if self.data['m'].iloc[-2] < 0 and self.position in [0, 1]:
-                  o = api.create_order(self.stream_instrument,
-                                units=-(1 + self.position) * self.units,
-                                suppress=True, ret=True)
-                  print('\n*** GOING SHORT ***')
-                  self.print_transactions(tid=int(o['id']) - 1)
-                  self.position = -1
+  def on_success(self, time, bid, ask):
+    trade = False
+    # print(self.ticks, end=' ')
+    self.tick_data = self.tick_data.append(
+    pd.DataFrame({'b': bid, 'a': ask, 'm': (ask + bid) / 2},
+    index=[pd.Timestamp(time).tz_localize(tz=None)])
+    )
+    self.data = self.tick_data.resample('5s', label='right').last().ffill()
+    self.data['r'] = np.log(self.data['m'] / self.data['m'].shift(1))
+    self.data['m'] = self.data['returns'].rolling(self.momentum).mean()
+    self.data.dropna(inplace=True)
+    if len(self.data) > self.min_length:
+       self.min_length += 1
+       if self.data['m'].iloc[-2] > 0 and self.position in [0, -1]:
+          o = api.create_order(self.stream_instrument, units=(1 - self.position) * self.units, suppress=True, ret=True)
+          print('\n*** GOING LONG ***')
+          api.print_transactions(tid=int(o['id']) - 1)
+          self.position = 1
+          if self.data['m'].iloc[-2] < 0 and self.position in [0, 1]:
+             o = api.create_order(self.stream_instrument, units=-(1 + self.position) * self.units, suppress=True, ret=True)
+             print('\n*** GOING SHORT ***')
+             self.print_transactions(tid=int(o['id']) - 1)
+             self.position = -1
       
-        def closingactiveorders(self):
-            #[3c]
-            #closing out the final position. shows the complete, detailed order object
-            from pprint import pprint
-            o = mt.create_order('EUR_USD', units=-mt.position * mt.units, suppress=True, ret = True)
-            print('\n*** POSITION CLOSED ***')
-            mt.print_transactions(tid=int(o['id']) - 1)
-            print('\n')
-            pprint(o)
+  def closingactiveorders(self):
+     #[3c]
+     #closing out the final position. shows the complete, detailed order object
+     from pprint import pprint
+     o = mt.create_order('EUR_USD', units=-mt.position * mt.units, suppress=True, ret = True)
+     print('\n*** POSITION CLOSED ***')
+     mt.print_transactions(tid=int(o['id']) - 1)
+     print('\n')
+     pprint(o)
 '''              
       #source: https://github.com/GJason88/backtrader-backtests/blob/master/StochasticSR/Stochastic_SR_Backtest.py
 '''
