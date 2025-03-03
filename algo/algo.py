@@ -94,8 +94,8 @@ class algo:
     mt.stream_data('EUR_USD', stop=100)
 
 #initialize automation
-class MomentumTrader(tpqoa.tpqoa):
-  def __init__(self, conf_file, instrument, bar_length, momentum, units, *args, **kwargs):
+class MomentumTrader:
+  def __init__(self,conf_file, instrument, bar_length, momentum, units, *args, **kwargs):
     super(MomentumTrader, self).__init__(conf_file)
     self.position = 0
     self.raw_data = pd.DataFrame()
