@@ -1,3 +1,5 @@
+!pip install git+https://github.com/yhilpisch/tpqoa.git
+import tpqoa
 import re
 import numpy as np
 import pandas as pd
@@ -16,16 +18,16 @@ import sys
 #create a function to place orders for each of these securities. batch ordering?
 
 #initialize automation
-class MomentumTrader:
+class MomentumTrader(tpqoa.tpqoa):
   def __init__(self,conf_file, instrument, bar_length, momentum, units, *args, **kwargs):
     super(MomentumTrader, self).__init__(conf_file)
     self.position = 0
+    self.instrument = instrument
     self.raw_data = pd.DataFrame()
     self.momentum = momentum
     self.min_length = momentum + 1
     self.units = units
     self.tick_data = pd.DataFrame()
-    self.instrument = instrument
     self.bar_length = bar_length 
            
   def on_success(self, time, bid, ask):
