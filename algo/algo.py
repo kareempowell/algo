@@ -1,4 +1,5 @@
-!pip install git+https://github.com/yhilpisch/tpqoa.git
+import sys
+sys.path.append('git+https://github.com/yhilpisch/tpqoa.git') # Replace with the actual path
 import tpqoa
 import re
 import numpy as np
