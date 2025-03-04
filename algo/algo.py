@@ -15,84 +15,6 @@ import sys
 #then select the securities based on the above
 #create a function to place orders for each of these securities. batch ordering?
 
-class algo:
-   
-  def __init__(self, api):
-    self.api = api  # Store the API instance
-    self.instruments_data = self.api.get_instruments()
-
-  def get_instruments_by_type(self):
-    """Filter instruments by asset type using naming conventions."""
-    
-    # Forex: Typically formatted as "XXX/YYY" (e.g., "EUR/USD", "GBP/JPY")
-    forex_pattern = re.compile(r"^[A-Z]{3}/[A-Z]{3}$")
-    return [instrument[1] for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
-    
-       
-  def select_instrument(self, instruments, startdate, enddate):
-    #selecting instruments N.B. 1st line previously data = oanda.get_history
-    datalist=[]
-    for instrument in instruments:
-       data = self.api.get_history(
-          instrument=instrument,
-          start=startdate,
-          end=enddate,
-          granularity='M1',
-          price='M'
-       )
-       data.insert(0, "Instrument", instrument)
-       datalist.append(data)
-    return datalist
-  
-   #'EUR_USD'
-   
-  def measure_performance(self, datalist):
-    """
-    Backtesting: Build out momentum strategy for each instrument in datalist.
-    """
-    results=[]
-    import pandas as pd
-    for data in datalist:
-       data=data.copy()
-       data['returns'] = np.log(data['c'] / data['c'].shift(1))
-       data['Instrument'] = data["Instrument"].iloc[0]  # Ensure instrument name is present
-       for momentum in [15, 30, 60, 120, 150]:
-           col = f'position_{momentum}'
-           data[col] = np.sign(data['returns'].rolling(momentum).mean())
-       results.append(data)  # Store the modified DataFrame
-    return pd.concat(results)  # Combine all into one table
-
-  def measure_performance2(self, datalist):
-    """
-    Applies a momentum strategy by calculating log returns and momentum signals.
-    Returns a DataFrame with Instrument and momentum signals.
-    """
-    results = []  # Store processed DataFrames
-    import pandas as pd 
-    for data in datalist:
-       data['returns'] = np.log(data['c'] / data['c'].shift(1))  # Calculate log returns
-       # Create momentum signal columns
-       for momentum in [15, 30, 60, 120,150]:
-           data[f'position_{momentum}'] = np.sign(data['returns'].rolling(momentum).mean())
-       # Keep only the Instrument column and momentum signals
-       results.append(data[['Instrument'] + [f'position_{m}' for m in [15, 30, 60, 120,150]]])  
-    return pd.concat(results)  # Combine all instruments into one DataFrame
- 
-     
-    #visualize strategy performance | N.B. line 2 previously 'seaborn'
-    #from pylab import plt
-    #plt.style.use('seaborn-v0_8-colorblind')
-    #strats = ['returns']
-    #for col in cols:
-    #    strat = f's_{col[2:]}'
-    #    data[strat] = data[col].shift(1) * data['returns']
-    #    strats.append(strat)
-    #data[strats].dropna().cumsum().apply(np.exp).plot(cmap='coolwarm');
-
-    #may need to leave this for jupityer
-    mt = MomentumTrader('/content/drive/MyDrive/Paueru/Projects/Models/2. AlgoTrading Models/oanda.cfg', momentum=5)
-    mt.stream_data('EUR_USD', stop=100)
-
 #initialize automation
 class MomentumTrader:
   def __init__(self,conf_file, instrument, bar_length, momentum, units, *args, **kwargs):
@@ -229,3 +151,81 @@ class StochasticSR(bt.Strategy):
         elif self.position.size < 0:
             if self.stochastic.lines.percD[0] <= 30:
                 self.close(oco=self.stop_price)
+
+class algo:
+   
+  def __init__(self, api):
+    self.api = api  # Store the API instance
+    self.instruments_data = self.api.get_instruments()
+
+  def get_instruments_by_type(self):
+    """Filter instruments by asset type using naming conventions."""
+    
+    # Forex: Typically formatted as "XXX/YYY" (e.g., "EUR/USD", "GBP/JPY")
+    forex_pattern = re.compile(r"^[A-Z]{3}/[A-Z]{3}$")
+    return [instrument[1] for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
+    
+       
+  def select_instrument(self, instruments, startdate, enddate):
+    #selecting instruments N.B. 1st line previously data = oanda.get_history
+    datalist=[]
+    for instrument in instruments:
+       data = self.api.get_history(
+          instrument=instrument,
+          start=startdate,
+          end=enddate,
+          granularity='M1',
+          price='M'
+       )
+       data.insert(0, "Instrument", instrument)
+       datalist.append(data)
+    return datalist
+  
+   #'EUR_USD'
+   
+  def measure_performance(self, datalist):
+    """
+    Backtesting: Build out momentum strategy for each instrument in datalist.
+    """
+    results=[]
+    import pandas as pd
+    for data in datalist:
+       data=data.copy()
+       data['returns'] = np.log(data['c'] / data['c'].shift(1))
+       data['Instrument'] = data["Instrument"].iloc[0]  # Ensure instrument name is present
+       for momentum in [15, 30, 60, 120, 150]:
+           col = f'position_{momentum}'
+           data[col] = np.sign(data['returns'].rolling(momentum).mean())
+       results.append(data)  # Store the modified DataFrame
+    return pd.concat(results)  # Combine all into one table
+
+  def measure_performance2(self, datalist):
+    """
+    Applies a momentum strategy by calculating log returns and momentum signals.
+    Returns a DataFrame with Instrument and momentum signals.
+    """
+    results = []  # Store processed DataFrames
+    import pandas as pd 
+    for data in datalist:
+       data['returns'] = np.log(data['c'] / data['c'].shift(1))  # Calculate log returns
+       # Create momentum signal columns
+       for momentum in [15, 30, 60, 120,150]:
+           data[f'position_{momentum}'] = np.sign(data['returns'].rolling(momentum).mean())
+       # Keep only the Instrument column and momentum signals
+       results.append(data[['Instrument'] + [f'position_{m}' for m in [15, 30, 60, 120,150]]])  
+    return pd.concat(results)  # Combine all instruments into one DataFrame
+ 
+     
+    #visualize strategy performance | N.B. line 2 previously 'seaborn'
+    #from pylab import plt
+    #plt.style.use('seaborn-v0_8-colorblind')
+    #strats = ['returns']
+    #for col in cols:
+    #    strat = f's_{col[2:]}'
+    #    data[strat] = data[col].shift(1) * data['returns']
+    #    strats.append(strat)
+    #data[strats].dropna().cumsum().apply(np.exp).plot(cmap='coolwarm');
+
+    #may need to leave this for jupityer
+    mt = MomentumTrader('/content/drive/MyDrive/Paueru/Projects/Models/2. AlgoTrading Models/oanda.cfg', momentum=5)
+    mt.stream_data('EUR_USD', stop=100)
