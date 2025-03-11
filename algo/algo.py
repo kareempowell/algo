@@ -263,7 +263,7 @@ class algo:
   def OANDA_Connection(active_datetime, pair): #Source https://timpickup1.medium.com/forex-in-python-downloading-historic-data-57c25811581b
     global timeframe
     client = oandapyV20.API(access_token="APIKEY")
-    params = {"from": active_datetime, "count": 5000, "granularity": timeframe}
+    params = {"from": active_datetime, "count": 50, "granularity": timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
     client.request(r)
     r.response['candles'][0]['mid']
