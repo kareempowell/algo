@@ -240,8 +240,64 @@ class algo:
        # Keep only the Instrument column and momentum signals
        results.append(data[['Instrument'] + [f'position_{m}' for m in [15, 30, 60, 120,150]]])  
     return pd.concat(results)  # Combine all instruments into one DataFrame
- 
-     
+    
+  def OANDA_Connection_Latest(pair): #Source https://timpickup1.medium.com/forex-in-python-downloading-historic-data-57c25811581b
+    global timeframe
+    client = oandapyV20.API(access_token="APIKEY")
+    params = {"count": 1, "granularity": timeframe}
+    r = instruments.InstrumentsCandles(instrument=pair, params=params)
+    client.request(r)
+    r.response['candles'][0]['mid']
+    r.response['candles'][0]['time']
+    r.response['candles'][0]['volume']
+    dat = []
+    for oo in r.response['candles']:
+       dat.append([oo['time']])
+       df = pd.DataFrame(dat)
+       df.columns = ['Time']
+       #Convert To Float
+       df["Time"] = pd.to_datetime(df["Time"], unit='ns')
+       latest_datetime = int((df['Time'].iloc[0]).replace(tzinfo=timezone.utc).timestamp())
+    return latest_datetime
+    
+  def OANDA_Connection(active_datetime, pair): #Source https://timpickup1.medium.com/forex-in-python-downloading-historic-data-57c25811581b
+    global timeframe
+    client = oandapyV20.API(access_token="APIKEY")
+    params = {"from": active_datetime, "count": 5000, "granularity": timeframe}
+    r = instruments.InstrumentsCandles(instrument=pair, params=params)
+    client.request(r)
+    r.response['candles'][0]['mid']
+    r.response['candles'][0]['time']
+    r.response['candles'][0]['volume']
+    dat = []
+    for oo in r.response['candles']:
+       dat.append([oo['time'], oo['mid']['o'], oo['mid']['h'], oo['mid']['l'], oo['mid']['c'], oo['volume'], oo['complete']])
+       df = pd.DataFrame(dat)
+       df.columns = ['Time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Complete']
+       #Convert To Float
+       df["Time"] = pd.to_datetime(df["Time"], unit='ns')
+       df["Open"] = pd.to_numeric(df["Open"], downcast="float")
+       df["High"] = pd.to_numeric(df["High"], downcast="float")
+       df["Low"] = pd.to_numeric(df["Low"], downcast="float")
+       df["Close"] = pd.to_numeric(df["Close"], downcast="float")
+    return df
+
+  def DownloadData(pair): #Source https://timpickup1.medium.com/forex-in-python-downloading-historic-data-57c25811581b
+    global start_datetime
+    start_unix = int(start_datetime.replace(tzinfo=timezone.utc).timestamp())
+    latest_datetime = OANDA_Connection_Latest(pair)
+    active_datetime = start_unix
+    all_data = pd.DataFrame([])
+    while active_datetime != latest_datetime:
+       df = OANDA_Connection(active_datetime, pair)
+       last_row = df.tail(1)
+       active_datetime = int((last_row['Time'].iloc[0]).replace(tzinfo=timezone.utc).timestamp())
+       all_data = all_data.append(df)
+       all_data = all_data.reset_index()
+       all_data = all_data.drop(['index'], axis=1)
+    return all_data
+
+
     #visualize strategy performance | N.B. line 2 previously 'seaborn'
     #from pylab import plt
     #plt.style.use('seaborn-v0_8-colorblind')
@@ -253,5 +309,5 @@ class algo:
     #data[strats].dropna().cumsum().apply(np.exp).plot(cmap='coolwarm');
 
     #may need to leave this for jupityer
-    mt = MomentumTrader('/content/drive/MyDrive/Paueru/Projects/Models/2. AlgoTrading Models/oanda.cfg', momentum=5)
-    mt.stream_data('EUR_USD', stop=100)
+    #mt = MomentumTrader('/content/drive/MyDrive/Paueru/Projects/Models/2. AlgoTrading Models/oanda.cfg', momentum=5)
+    #mt.stream_data('EUR_USD', stop=100)
