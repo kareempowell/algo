@@ -282,8 +282,8 @@ class algo:
        df["Close"] = pd.to_numeric(df["Close"], downcast="float")
     return df
 
-  def DownloadData(pair): #Source https://timpickup1.medium.com/forex-in-python-downloading-historic-data-57c25811581b
-    global start_datetime
+  def DownloadData(pair, start_datetime): #Source https://timpickup1.medium.com/forex-in-python-downloading-historic-data-57c25811581b
+    #global start_datetime
     start_unix = int(start_datetime.replace(tzinfo=timezone.utc).timestamp())
     latest_datetime = OANDA_Connection_Latest(pair)
     active_datetime = start_unix
