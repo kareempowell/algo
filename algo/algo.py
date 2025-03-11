@@ -180,7 +180,7 @@ class StochasticSR(bt.Strategy):
             if self.stochastic.lines.percD[0] <= 30:
                 self.close(oco=self.stop_price)
 
-class Algo:
+class algo:
   
   def __init__(self, api):
     self.api = api  # Store the API instance
