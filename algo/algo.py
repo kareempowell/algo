@@ -184,12 +184,13 @@ class algo:
   
   def __init__(self, api):
     self.api = api  # Store the API instance
-    self.instruments_data = self.api.get_instruments()
+    #self.instruments_data = self.api.get_instruments() #fetch all instruments
     
   #timeframe = "M5"
   def get_instruments_by_type(self):
     """Filter instruments by asset type using naming conventions."""
     # Forex: Typically formatted as "XXX/YYY" (e.g., "EUR/USD", "GBP/JPY")
+    self.instruments_data = self.api.get_instruments() #fetch all instruments
     forex_pattern = re.compile(r"^[A-Z]{3}/[A-Z]{3}$")
     return [instrument[1] for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
     
