@@ -181,13 +181,12 @@ class StochasticSR(bt.Strategy):
                 self.close(oco=self.stop_price)
 
 class algo:
-  timeframe = "M5" #which timeframe am I using 
   
   def __init__(self, api):
     self.api = api  # Store the API instance
     self.instruments_data = self.api.get_instruments()
-    self.timeframe=timeframe
-
+    
+  timeframe = "M5"
   def get_instruments_by_type(self):
     """Filter instruments by asset type using naming conventions."""
     
