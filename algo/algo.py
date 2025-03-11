@@ -184,7 +184,7 @@ class algo:
   
   def __init__(self, api):
     self.api = api  # Store the API instance
-    #self.instruments_data = self.api.get_instruments() #fetch all instruments
+    self.instruments_data = self.api.get_instruments() #fetch all instruments
     
   #timeframe = "M5"
   def get_instruments_by_type(self):
