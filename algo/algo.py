@@ -241,6 +241,8 @@ class algo:
        results.append(data[['Instrument'] + [f'position_{m}' for m in [15, 30, 60, 120,150]]])  
     return pd.concat(results)  # Combine all instruments into one DataFrame
     
+  timeframe = "H1" #which timeframe am I using
+
   def OANDA_Connection_Latest(pair): #Source https://timpickup1.medium.com/forex-in-python-downloading-historic-data-57c25811581b
     global timeframe
     client = oandapyV20.API(access_token="APIKEY")
