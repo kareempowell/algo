@@ -8,7 +8,9 @@ import backtrader as bt
 import logging
 import datetime
 import os.path
-import sys  
+import sys
+import time
+from datetime import datetime, timezone
 
 #choose a group of bitcoin, indices, and forex
 #iterate through the instruments using the select function
@@ -179,10 +181,12 @@ class StochasticSR(bt.Strategy):
                 self.close(oco=self.stop_price)
 
 class algo:
-   
+  timeframe = "M5" #which timeframe am I using 
+  
   def __init__(self, api):
     self.api = api  # Store the API instance
     self.instruments_data = self.api.get_instruments()
+    self.timeframe=timeframe
 
   def get_instruments_by_type(self):
     """Filter instruments by asset type using naming conventions."""
@@ -240,63 +244,47 @@ class algo:
        # Keep only the Instrument column and momentum signals
        results.append(data[['Instrument'] + [f'position_{m}' for m in [15, 30, 60, 120,150]]])  
     return pd.concat(results)  # Combine all instruments into one DataFrame
-    
-  timeframe = "H1" #which timeframe am I using
 
-  def OANDA_Connection_Latest(pair): #Source https://timpickup1.medium.com/forex-in-python-downloading-historic-data-57c25811581b
-    global timeframe
-    client = oandapyV20.API(access_token="APIKEY")
-    params = {"count": 1, "granularity": timeframe}
+  def OANDA_Connection_Latest(self, pair):
+    params = {"count": 1, "granularity": self.timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
-    client.request(r)
-    r.response['candles'][0]['mid']
-    r.response['candles'][0]['time']
-    r.response['candles'][0]['volume']
-    dat = []
-    for oo in r.response['candles']:
-       dat.append([oo['time']])
-       df = pd.DataFrame(dat)
-       df.columns = ['Time']
-       #Convert To Float
-       df["Time"] = pd.to_datetime(df["Time"], unit='ns')
-       latest_datetime = int((df['Time'].iloc[0]).replace(tzinfo=timezone.utc).timestamp())
+    self.api.request(r)
+
+    latest_time = r.response['candles'][0]['time']
+    latest_datetime = pd.to_datetime(latest_time)
+
     return latest_datetime
-    
-  def OANDA_Connection(active_datetime, pair): #Source https://timpickup1.medium.com/forex-in-python-downloading-historic-data-57c25811581b
-    global timeframe
-    client = oandapyV20.API(access_token="APIKEY")
-    params = {"from": active_datetime, "count": 50, "granularity": timeframe}
-    r = instruments.InstrumentsCandles(instrument=pair, params=params)
-    client.request(r)
-    r.response['candles'][0]['mid']
-    r.response['candles'][0]['time']
-    r.response['candles'][0]['volume']
-    dat = []
-    for oo in r.response['candles']:
-       dat.append([oo['time'], oo['mid']['o'], oo['mid']['h'], oo['mid']['l'], oo['mid']['c'], oo['volume'], oo['complete']])
-       df = pd.DataFrame(dat)
-       df.columns = ['Time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Complete']
-       #Convert To Float
-       df["Time"] = pd.to_datetime(df["Time"], unit='ns')
-       df["Open"] = pd.to_numeric(df["Open"], downcast="float")
-       df["High"] = pd.to_numeric(df["High"], downcast="float")
-       df["Low"] = pd.to_numeric(df["Low"], downcast="float")
-       df["Close"] = pd.to_numeric(df["Close"], downcast="float")
-    return df
 
-  def DownloadData(pair, start_datetime): #Source https://timpickup1.medium.com/forex-in-python-downloading-historic-data-57c25811581b
-    #global start_datetime
-    start_unix = int(start_datetime.replace(tzinfo=timezone.utc).timestamp())
-    latest_datetime = OANDA_Connection_Latest(pair)
+  def OANDA_Connection(self, active_datetime, pair):
+    params = {"from": active_datetime.isoformat(), "count": 50, "granularity": self.timeframe}
+    r = instruments.InstrumentsCandles(instrument=pair, params=params)
+    self.api.request(r)
+
+    data = [
+        [candle['time'], candle['mid']['o'], candle['mid']['h'], candle['mid']['l'], candle['mid']['c'], candle['volume']]
+        for candle in r.response['candles']
+    ]
+
+    df = pd.DataFrame(data, columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
+    df["Time"] = pd.to_datetime(df["Time"])
+    df[["Open", "High", "Low", "Close"]] = df[["Open", "High", "Low", "Close"]].astype(float)
+
+    return df
+    
+  def DownloadData(self, pair, start_datetime):
+    start_unix = start_datetime
+    latest_datetime = self.OANDA_Connection_Latest(pair)
     active_datetime = start_unix
     all_data = pd.DataFrame([])
-    while active_datetime != latest_datetime:
-       df = OANDA_Connection(active_datetime, pair)
-       last_row = df.tail(1)
-       active_datetime = int((last_row['Time'].iloc[0]).replace(tzinfo=timezone.utc).timestamp())
-       all_data = all_data.append(df)
-       all_data = all_data.reset_index()
-       all_data = all_data.drop(['index'], axis=1)
+
+    while active_datetime < latest_datetime:
+        df = self.OANDA_Connection(active_datetime, pair)
+        if df.empty:
+            break
+        last_time = df["Time"].iloc[-1]
+        active_datetime = last_time
+        all_data = pd.concat([all_data, df], ignore_index=True)
+
     return all_data
 
 
