@@ -12,8 +12,6 @@ import sys
 import time
 from datetime import datetime, timezone
 
-!pip install oandapyV20
-
 #Load OANDA Packges
 import oandapyV20
 import oandapyV20.endpoints.instruments as instruments
