@@ -12,7 +12,7 @@ import sys
 import time
 from datetime import datetime, timezone
 
-pip install oandapyV20
+!pip install oandapyV20
 
 #Load OANDA Packges
 import oandapyV20
