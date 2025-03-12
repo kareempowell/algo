@@ -184,16 +184,14 @@ class algo:
   
   def __init__(self, api):
     self.api = api  # Store the API instance
-    #self.instruments_data = self.api.get_instruments() #fetch all instruments
+    self.instruments_data = self.api.get_instruments() #fetch all instruments
+    self.timeframe = "M5"
     
-  #timeframe = "M5"
   def get_instruments_by_type(self):
-    """Filter instruments by asset type using naming conventions."""
+    """Return a list of instrument codes like ['EUR_USD', 'GBP_JPY']."""
     # Forex: Typically formatted as "XXX/YYY" (e.g., "EUR/USD", "GBP/JPY")
-    #self.instruments_data = self.api.get_instruments() #fetch all instruments
     forex_pattern = re.compile(r"^[A-Z]{3}/[A-Z]{3}$")
-    return [instrument[1] for instrument in forex_pattern] #in self.instruments_data if forex_pattern.match(instrument[0])
-    
+    return [instrument[1] for instrument in self.instruments_data if forex_pattern.match(instrument[0])]
        
   def select_instrument(self, instruments, startdate, enddate):
     #selecting instruments N.B. 1st line previously data = oanda.get_history
