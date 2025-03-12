@@ -249,7 +249,7 @@ class algo:
   def OANDA_Connection_Latest(self, pair):
     params = {"count": 1, "granularity": self.timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
-    self.request(r)
+    self.client.request(r)
 
     latest_time = r.response['candles'][0]['time']
     latest_datetime = pd.to_datetime(latest_time)
@@ -259,7 +259,7 @@ class algo:
   def OANDA_Connection(self, active_datetime, pair):
     params = {"from": active_datetime.isoformat(), "count": 50, "granularity": self.timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
-    self.request(r)
+    self.client.request(r)
 
     data = [
         [candle['time'], candle['mid']['o'], candle['mid']['h'], candle['mid']['l'], candle['mid']['c'], candle['volume']]
