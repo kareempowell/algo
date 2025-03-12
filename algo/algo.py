@@ -274,9 +274,7 @@ class algo:
 
     return df
     
-  def DownloadData(self, pair, start_datetime):
-    start_unix = int(start_datetime
-               .replace(tzinfo=timezone.pst).timestamp())
+  def DownloadData(self, pair, start_unix):
     latest_datetime = OANDA_Connection_Latest(pair)
     active_datetime = start_unix
     all_data = pd.DataFrame([])
