@@ -12,6 +12,12 @@ import sys
 import time
 from datetime import datetime, timezone
 
+pip install oandapyV20
+
+#Load OANDA Packges
+import oandapyV20
+import oandapyV20.endpoints.instruments as instruments
+
 #choose a group of bitcoin, indices, and forex
 #iterate through the instruments using the select function
 #for each instrument measure their relative performance and store in a list
