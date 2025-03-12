@@ -247,9 +247,10 @@ class algo:
     return pd.concat(results)  # Combine all instruments into one DataFrame
 
   def OANDA_Connection_Latest(self, pair):
+    client = oandapyV20.API(access_token="10403da028e856603b23b320c65890cd-95a77404131b95acda03ecd94ff68fa0")
     params = {"count": 1, "granularity": self.timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
-    self.client.request(r)
+    client.request(r)
 
     latest_time = r.response['candles'][0]['time']
     latest_datetime = pd.to_datetime(latest_time)
@@ -257,9 +258,10 @@ class algo:
     return latest_datetime
 
   def OANDA_Connection(self, active_datetime, pair):
+    client = oandapyV20.API(access_token="10403da028e856603b23b320c65890cd-95a77404131b95acda03ecd94ff68fa0")
     params = {"from": active_datetime.isoformat(), "count": 50, "granularity": self.timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
-    self.client.request(r)
+    client.request(r)
 
     data = [
         [candle['time'], candle['mid']['o'], candle['mid']['h'], candle['mid']['l'], candle['mid']['c'], candle['volume']]
