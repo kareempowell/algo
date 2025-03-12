@@ -280,7 +280,7 @@ class algo:
     active_datetime = start_unix
     all_data = pd.DataFrame([])
 
-    while active_datetime < latest_datetime:
+    while active_datetime != latest_datetime:
         df = self.OANDA_Connection(active_datetime, pair)
         if df.empty:
             break
