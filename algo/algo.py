@@ -275,19 +275,19 @@ class algo:
     return df
     
   def DownloadData(self, pair, start_datetime):
-    start_unix = start_datetime
-    latest_datetime = self.OANDA_Connection_Latest(pair)
+    start_unix = int(start_datetime
+               .replace(tzinfo=timezone.pst).timestamp())
+    latest_datetime = OANDA_Connection_Latest(pair)
     active_datetime = start_unix
     all_data = pd.DataFrame([])
-
     while active_datetime != latest_datetime:
-        df = self.OANDA_Connection(active_datetime, pair)
-        if df.empty:
-            break
-        last_time = df["Time"].iloc[-1]
-        active_datetime = last_time
-        all_data = pd.concat([all_data, df], ignore_index=True)
-
+    df = OANDA_Connection(active_datetime, pair)
+    last_row = df.tail(1)
+    active_datetime = int((last_row['Time'].iloc[0])
+                    .replace(tzinfo=timezone.pst).timestamp())
+    all_data = all_data.append(df)
+    all_data = all_data.reset_index()
+    all_data = all_data.drop(['index'], axis=1)
     return all_data
 
 
