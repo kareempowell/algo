@@ -308,7 +308,7 @@ class algo:
     for candle in r.response['candles']
     ]
     
-    df = pd.DataFrame(data, columns=['Instrument','Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
+    df = pd.DataFrame(data, columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume','Instrument'])
     df["Time"] = pd.to_datetime(df["Time"])
     df[["Open", "High", "Low", "Close"]] = df[["Open", "High", "Low", "Close"]].astype(float)
     
