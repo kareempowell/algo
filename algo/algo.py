@@ -259,7 +259,7 @@ class algo:
 
   def OANDA_Connection(self, active_datetime, pair):
     client = oandapyV20.API(access_token="10403da028e856603b23b320c65890cd-95a77404131b95acda03ecd94ff68fa0")
-    params = {"from": active_datetime.isoformat(), "count": 50, "granularity": self.timeframe}
+    params = {"from": active_datetime, "count": 50, "granularity": self.timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
     client.request(r)
 
