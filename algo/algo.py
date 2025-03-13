@@ -246,7 +246,7 @@ class algo:
        results.append(data[['Instrument'] + [f'position_{m}' for m in [15, 30, 60, 120,150]]])  
     return pd.concat(results)  # Combine all instruments into one DataFrame
 
-  def OANDA_Connection_Latest(self, pair):
+  def OANDA_Connection_Latest1(self, pair):
     client = oandapyV20.API(access_token="10403da028e856603b23b320c65890cd-95a77404131b95acda03ecd94ff68fa0")
     params = {"count": 1, "granularity": self.timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
@@ -257,7 +257,7 @@ class algo:
 
     return latest_datetime
 
-  def OANDA_Connection(self, active_datetime, pair):
+  def OANDA_Connection1(self, active_datetime, pair):
     client = oandapyV20.API(access_token="10403da028e856603b23b320c65890cd-95a77404131b95acda03ecd94ff68fa0")
     params = {"from": active_datetime, "count": 50, "granularity": self.timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
@@ -274,7 +274,7 @@ class algo:
 
     return df
     
-  def DownloadData(self, pair, start_unix):
+  def DownloadData1(self, pair, start_unix):
     latest_datetime = self.OANDA_Connection_Latest(pair)
     print(pair)
     active_datetime = int(start_unix)
@@ -287,6 +287,52 @@ class algo:
        all_data = all_data.reset_index()
        all_data = all_data.drop(['index'], axis=1)
     return all_data
+
+  def OANDA_Connection_Latest(self, pair):
+        client = oandapyV20.API(access_token="10403da028e856603b23b320c65890cd-95a77404131b95acda03ecd94ff68fa0")
+        params = {"count": 1, "granularity": self.timeframe}
+        r = instruments.InstrumentsCandles(instrument=pair, params=params)
+        client.request(r)
+
+        latest_time = r.response['candles'][0]['time']
+        latest_datetime = pd.to_datetime(latest_time)
+
+        return latest_datetime
+
+    def OANDA_Connection(self, active_datetime, pair):
+        client = oandapyV20.API(access_token="10403da028e856603b23b320c65890cd-95a77404131b95acda03ecd94ff68fa0")
+        params = {"from": active_datetime, "count": 50, "granularity": self.timeframe}
+        r = instruments.InstrumentsCandles(instrument=pair, params=params)
+        client.request(r)
+
+        data = [
+            [candle['time'], candle['mid']['o'], candle['mid']['h'], candle['mid']['l'], candle['mid']['c'], candle['volume'], pair]
+            for candle in r.response['candles']
+        ]
+
+        df = pd.DataFrame(data, columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Instrument'])
+        df["Time"] = pd.to_datetime(df["Time"])
+        df[["Open", "High", "Low", "Close"]] = df[["Open", "High", "Low", "Close"]].astype(float)
+
+        return df
+
+    def DownloadData(self, pair, start_unix):
+        latest_datetime = self.OANDA_Connection_Latest(pair)
+        active_datetime = int(start_unix)
+
+        all_data = pd.DataFrame([])
+
+        while active_datetime != latest_datetime:
+            df = self.OANDA_Connection(active_datetime, pair)
+            if df.empty:
+                print(f"Warning: No data returned for {pair}")
+                break  # Avoid infinite loops if data is missing
+            
+            last_row = df.tail(1)
+            active_datetime = last_row['Time'].iloc[0]
+            all_data = pd.concat([all_data, df], ignore_index=True)
+
+        return all_data
 
 
     #visualize strategy performance | N.B. line 2 previously 'seaborn'
