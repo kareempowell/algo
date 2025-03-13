@@ -331,7 +331,7 @@ class algo:
       last_row = df.tail(1)
       active_datetime = last_row['Time'].iloc[0]
       all_data = pd.concat([all_data, df], ignore_index=True)
-    
+    print(all_data)
     return all_data
 
 
