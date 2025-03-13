@@ -282,7 +282,7 @@ class algo:
        df = self.OANDA_Connection(active_datetime, pair)
        last_row = df.tail(1)
        active_datetime = last_row['Time'].iloc[0]
-       all_data = all_data.append(df)
+       all_data = pd.concat([all_data, df], ignore_index=True) #all_data.append(df)
        all_data = all_data.reset_index()
        all_data = all_data.drop(['index'], axis=1)
     return all_data
