@@ -293,7 +293,6 @@ class algo:
     params = {"count": 1, "granularity": self.timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
     client.request(r)
-    print(pair)
     latest_time = r.response['candles'][0]['time']
     latest_datetime = pd.to_datetime(latest_time)
     
@@ -304,7 +303,6 @@ class algo:
     params = {"from": active_datetime, "count": 50, "granularity": self.timeframe}
     r = instruments.InstrumentsCandles(instrument=pair, params=params)
     client.request(r)
-    print(pair)
     data = [
     [candle['time'], candle['mid']['o'], candle['mid']['h'], candle['mid']['l'], candle['mid']['c'], candle['volume'], pair]
     for candle in r.response['candles']
@@ -319,7 +317,6 @@ class algo:
   def DownloadData(self, pair, start_unix):
     latest_datetime = self.OANDA_Connection_Latest(pair)
     active_datetime = int(start_unix)
-    print(pair)
     all_data = pd.DataFrame([])
     
     while active_datetime != latest_datetime:
@@ -331,7 +328,6 @@ class algo:
       last_row = df.tail(1)
       active_datetime = last_row['Time'].iloc[0]
       all_data = pd.concat([all_data, df], ignore_index=True)
-    print(all_data)
     return all_data
 
 
