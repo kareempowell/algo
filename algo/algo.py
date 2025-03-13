@@ -276,6 +276,7 @@ class algo:
     
   def DownloadData(self, pair, start_unix):
     latest_datetime = self.OANDA_Connection_Latest(pair)
+    print(pair)
     active_datetime = int(start_unix)
     all_data = pd.DataFrame([])
     while active_datetime != latest_datetime:
