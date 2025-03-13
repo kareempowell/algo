@@ -310,11 +310,11 @@ class algo:
     for candle in r.response['candles']
     ]
     
-      df = pd.DataFrame(data, columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Instrument'])
-      df["Time"] = pd.to_datetime(df["Time"])
-      df[["Open", "High", "Low", "Close"]] = df[["Open", "High", "Low", "Close"]].astype(float)
-      
-      return df
+    df = pd.DataFrame(data, columns=['Time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Instrument'])
+    df["Time"] = pd.to_datetime(df["Time"])
+    df[["Open", "High", "Low", "Close"]] = df[["Open", "High", "Low", "Close"]].astype(float)
+    
+    return df
   
   def DownloadData(self, pair, start_unix):
     latest_datetime = self.OANDA_Connection_Latest(pair)
