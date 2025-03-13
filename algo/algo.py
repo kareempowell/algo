@@ -281,7 +281,7 @@ class algo:
     while active_datetime != latest_datetime:
        df = self.OANDA_Connection(active_datetime, pair)
        last_row = df.tail(1)
-       active_datetime = int(last_row['Time'].iloc[0])
+       active_datetime = last_row['Time'].iloc[0]
        all_data = all_data.append(df)
        all_data = all_data.reset_index()
        all_data = all_data.drop(['index'], axis=1)
